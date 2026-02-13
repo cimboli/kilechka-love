@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Для Килечки</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Comic Sans MS", system-ui, sans-serif;
+            overflow: hidden;
+            background: #ffb3d9;
+        }
+
+        .screen {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        .btn {
+            padding: 14px 26px;
+            background: #ff4fa8;
+            border: none;
+            border-radius: 999px;
+            color: white;
+            font-size: 18px;
+            margin-top: 24px;
+            cursor: pointer;
+            box-shadow: 0 6px 14px rgba(255, 79, 168, 0.5);
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 3px 8px rgba(255, 79, 168, 0.4);
+        }
+
+        /* ЭКРАН 1 */
+
+        #screen1 {
+            background: radial-gradient(circle at top, #ffe6f5, #ff8ac2);
+            overflow: hidden;
+        }
+
+        .title {
+            font-size: 32px;
+            color: #ff1f8a;
+            text-align: center;
+            padding: 0 20px;
+            z-index: 2;
+            text-shadow: 0 3px 6px rgba(255, 0, 120, 0.4);
+        }
+
+        .heart {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: #ff4fa8;
+            transform: rotate(-45deg);
+            opacity: 0.7;
+            animation: floatUp 10s linear infinite;
+        }
+
+        .heart::before,
+        .heart::after {
+            content: "";
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: #ff4fa8;
+            border-radius: 50%;
+        }
+
+        .heart::before {
+            top: -20px;
+            left: 0;
+        }
+
+        .heart::after {
+            left: 20px;
+            top: 0;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(-45deg);
+            }
+            100% {
+                transform: translateY(-20vh) rotate(-45deg);
+            }
+        }
+
+        /* ЭКРАН 2 — ИГРА */
+
+        #screen2 {
+            background: linear-gradient(#4ec6ff, #003f7f);
+            color: white;
+            padding-top: 10px;
+        }
+
+        .sea-title {
+            font-size: 26px;
+            margin: 4px 10px;
+            text-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        .sea-sub {
+            font-size: 14px;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        #game-area {
+            width: 100%;
+            height: 65vh;
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+            background: radial-gradient(circle at top, #7ee0ff, #003f7f);
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            animation: bubbleUp 10s linear infinite;
+        }
+
+        @keyframes bubbleUp {
+            0% {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-20%);
+                opacity: 0;
+            }
+        }
+
+        #seal {
+            position: absolute;
+            width: 110px;
+            height: 70px;
+            border-radius: 50px;
+            background: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        #seal::before {
+            content: "";
+            position: absolute;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: #ffffff;
+            top: -25px;
+            left: 30px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+        }
+
+        #seal::after {
+            content: "";
+            position: absolute;
+            width: 40px;
+            height: 30px;
+            border-radius: 50%;
+            background: #ffffff;
+            bottom: -10px;
+            right: 0;
+            transform: rotate(-20deg);
+        }
+
+        .seal-eye {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #000;
+            border-radius: 50%;
+            top: -10px;
+            left: 48px;
+        }
+
+        .seal-eye::after {
+            content: "";
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #fff;
+            border-radius: 50%;
+            top: 1px;
+            left: 2px;
+        }
+
+        .seal-mouth {
+            position: absolute;
+            width: 18px;
+            height: 10px;
+            border-radius: 0 0 18px 18px;
+            border-bottom: 2px solid #000;
+            top: 0px;
+            left: 46px;
+        }
+
+        .seal-spot {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ddd;
+            border-radius: 50%;
+        }
+
+        .seal-spot.s1 { top: -5px; left: 38px; }
+        .seal-spot.s2 { top: -2px; left: 60px; }
+        .seal-spot.s3 { top: 8px; left: 40px; }
+
+        .fish {
+            position: absolute;
+            width: 50px;
+            height: 26px;
+            background: #ffd966;
+            border-radius: 50px 50px 50px 50px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .fish::before {
+            content: "";
+            position: absolute;
+            right: -18px;
+            top: 4px;
+            width: 0;
+            height: 0;
+            border-top: 9px solid transparent;
+            border-bottom: 9px solid transparent;
+            border-left: 18px solid #ffbf40;
+        }
+
+        .fish-eye {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #000;
+            border-radius: 50%;
+            left: 8px;
+            top: 8px;
+        }
+
+        .fish-eye::after {
+            content: "";
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            top: 1px;
+            left: 2px;
+        }
+
+        #score-box {
+            font-size: 18px;
+            margin-top: 8px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        #win-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .win-heart {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .win-heart .heart {
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1) rotate(-45deg); }
+            50% { transform: scale(1.15) rotate(-45deg); }
+            100% { transform: scale(1) rotate(-45deg); }
+        }
+
+        .win-text {
+            font-size: 24px;
+            margin: 8px 0 4px;
+        }
+
+        /* ЭКРАН 3 — КОЛЛАЖ */
+
+        #screen3 {
+            background: radial-gradient(circle at top, #ffe6f5, #ff8ac2);
+            overflow: hidden;
+        }
+
+        .collage {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .photo {
+            position: absolute;
+            width: 140px;
+            height: 180px;
+            border-radius: 16px;
+            background: #ff99c8;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .photo-inner-heart {
+            width: 70px;
+            height: 70px;
+            position: relative;
+        }
+
+        .photo-inner-heart .heart {
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            animation: none;
+        }
+
+        .float1 { top: 10%; left: 10%; animation: drift1 12s infinite alternate ease-in-out; }
+        .float2 { top: 20%; right: 8%; animation: drift2 14s infinite alternate ease-in-out; }
+        .float3 { bottom: 15%; left: 15%; animation: drift3 16s infinite alternate ease-in-out; }
+        .float4 { bottom: 10%; right: 12%; animation: drift4 18s infinite alternate ease-in-out; }
+
+        @keyframes drift1 {
+            from { transform: translate(-10px, 10px) rotate(-4deg); }
+            to { transform: translate(15px, -15px) rotate(4deg); }
+        }
+
+        @keyframes drift2 {
+            from { transform: translate(10px, 10px) rotate(3deg); }
+            to { transform: translate(-15px, -10px) rotate(-3deg); }
+        }
+
+        @keyframes drift3 {
+            from { transform: translate(-15px, -10px) rotate(2deg); }
+            to { transform: translate(10px, 15px) rotate(-2deg); }
+        }
+
+        @keyframes drift4 {
+            from { transform: translate(5px, -15px) rotate(-5deg); }
+            to { transform: translate(-10px, 10px) rotate(5deg); }
+        }
+
+        .collage-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* ЭКРАН 4 — ФИНАЛ */
+
+        #screen4 {
+            background: #f8e7d0;
+        }
+
+        .renaissance-frame {
+            border: 18px solid #c49b6c;
+            padding: 30px 20px;
+            background: #fff7ef;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+            position: relative;
+            max-width: 90%;
+        }
+
+        .final-text {
+            font-family: "Brush Script MT", "Pacifico", cursive;
+            font-size: 34px;
+            color: #b30059;
+            text-align: center;
+        }
+
+        .vine {
+            position: absolute;
+            width: 40px;
+            height: 140px;
+            border-radius: 999px;
+            border: 3px solid #4f8a3b;
+            border-color: #4f8a3b transparent #4f8a3b transparent;
+        }
+
+        .vine.left {
+            left: -30px;
+            top: 10px;
+        }
+
+        .vine.right {
+            right: -30px;
+            top: 10px;
+        }
+
+        .flower {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: #ff7fb0;
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px #ffd1e4;
+        }
+
+        .flower::before,
+        .flower::after {
+            content: "";
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: #ff7fb0;
+            border-radius: 50%;
+        }
+
+        .flower::before {
+            top: -12px;
+            left: 0;
+        }
+
+        .flower::after {
+            left: 12px;
+            top: 0;
+        }
+
+        .flower-center {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ffe066;
+            border-radius: 50%;
+            top: 6px;
+            left: 6px;
+        }
+
+        .cherub {
+            position: absolute;
+            width: 40px;
+            height: 30px;
+            border-radius: 20px;
+            background: #ffe6c7;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+        }
+
+        .cherub::before {
+            content: "";
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #ffe6c7;
+            top: -14px;
+            left: 9px;
+        }
+
+        .wing {
+            position: absolute;
+            width: 26px;
+            height: 18px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .wing.left {
+            left: -18px;
+            top: 4px;
+        }
+
+        .wing.right {
+            right: -18px;
+            top: 4px;
+        }
+
+        .cherub.left {
+            left: -60px;
+            top: -40px;
+        }
+
+        .cherub.right {
+            right: -60px;
+            top: -40px;
+        }
+
+        @media (max-width: 480px) {
+            .title {
+                font-size: 26px;
+            }
+            .sea-title {
+                font-size: 22px;
+            }
+            .final-text {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ЭКРАН 1 -->
+<section id="screen1" class="screen active">
+    <div id="hearts-container"></div>
+    <h1 class="title">Я очень тебя люблю, Килечка</h1>
+    <button class="btn" onclick="goToScreen(2)">Я тоже тебя люблю</button>
+</section>
+
+<!-- ЭКРАН 2 — ИГРА -->
+<section id="screen2" class="screen">
+    <h2 class="sea-title">Я хочу тебя всегда</h2>
+    <p class="sea-sub">Постарайся скушать как можно больше килек вначале</p>
+
+    <div id="game-area">
+        <div id="seal">
+            <div class="seal-eye"></div>
+            <div class="seal-mouth"></div>
+            <div class="seal-spot s1"></div>
+            <div class="seal-spot s2"></div>
+            <div class="seal-spot s3"></div>
+        </div>
+    </div>
+
+    <div id="score-box">Кильки: <span id="score">0</span>/15</div>
+
+    <div id="win-screen">
+        <div class="win-heart">
+            <div class="heart"></div>
+        </div>
+        <p class="win-text">И + П = 🫧💕</p>
+        <button class="btn" onclick="goToScreen(3)">Дальше</button>
+    </div>
+</section>
+
+<!-- ЭКРАН 3 — КОЛЛАЖ -->
+<section id="screen3" class="screen">
+    <div class="collage">
+        <div class="photo float1">
+            <div class="photo-inner-heart">
+                <div class="heart"></div>
+            </div>
+        </div>
+        <div class="photo float2">
+            <div class="photo-inner-heart">
+                <div class="heart"></div>
+            </div>
+        </div>
+        <div class="photo float3">
+            <div class="photo-inner-heart">
+                <div class="heart"></div>
+            </div>
+        </div>
+        <div class="photo float4">
+            <div class="photo-inner-heart">
+                <div class="heart"></div>
+            </div>
+        </div>
+        <button class="btn collage-btn" onclick="goToScreen(4)">Дальше</button>
+    </div>
+</section>
+
+<!-- ЭКРАН 4 — ФИНАЛ -->
+<section id="screen4" class="screen">
+    <div class="renaissance-frame">
+        <div class="vine left"></div>
+        <div class="vine right"></div>
+
+        <div class="flower" style="top:-10px; left:10px;">
+            <div class="flower-center"></div>
+        </div>
+        <div class="flower" style="top:-10px; right:10px;">
+            <div class="flower-center"></div>
+        </div>
+
+        <div class="cherub left">
+            <div class="wing left"></div>
+            <div class="wing right"></div>
+        </div>
+        <div class="cherub right">
+            <div class="wing left"></div>
+            <div class="wing right"></div>
+        </div>
+
+        <h1 class="final-text">Будь Моим Валентином</h1>
+    </div>
+</section>
+
+<script>
+    function goToScreen(n) {
+        document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+        document.getElementById("screen" + n).classList.add("active");
+    }
+
+    const heartsContainer = document.getElementById("hearts-container");
+    for (let i = 0; i < 18; i++) {
+        const h = document.createElement("div");
+        h.classList.add("heart");
+        h.style.left = Math.random() * 100 + "vw";
+        h.style.animationDuration = 8 + Math.random() * 6 + "s";
+        h.style.animationDelay = -Math.random() * 10 + "s";
+        h.style.opacity = 0.4 + Math.random() * 0.4;
+        heartsContainer.appendChild(h);
+    }
+
+    const gameArea = document.getElementById("game-area");
+    const seal = document.getElementById("seal");
+    const scoreSpan = document.getElementById("score");
+    const winScreen = document.getElementById("win-screen");
+
+    let score = 0;
+    let fishCount = 0;
+
+    function createBubbles() {
+        for (let i = 0; i < 12; i++) {
+            const b = document.createElement("div");
+            b.classList.add("bubble");
+            const size = 8 + Math.random() * 18;
+            b.style.width = size + "px";
+            b.style.height = size + "px";
+            b.style.left = Math.random() * 100 + "%";
+            b.style.animationDuration = 8 + Math.random() * 8 + "s";
+            b.style.animationDelay = -Math.random() * 10 + "s";
+            gameArea.appendChild(b);
+        }
+    }
+    createBubbles();
+
+    function spawnFish() {
+        if (score >= 15) return;
+        const fish = document.createElement("div");
+        fish.classList.add("fish");
+
+        const eye = document.createElement("div");
+        eye.classList.add("fish-eye");
+        fish.appendChild(eye);
+
+        const areaRect = gameArea.getBoundingClientRect();
+        const x = Math.random() * (areaRect.width - 60) + 10;
+        const y = Math.random() * (areaRect.height - 50) + 10;
+
+        fish.style.left = x + "px";
+        fish.style.top = y + "px";
+
+        gameArea.appendChild(fish);
+        fishCount++;
+
+        const interval = setInterval(() => {
+            const sealRect = seal.getBoundingClientRect();
+            const fishRect = fish.getBoundingClientRect();
+
+            if (!(sealRect.right < fishRect.left ||
+                  sealRect.left > fishRect.right ||
+                  sealRect.bottom < fishRect.top ||
+                  sealRect.top > fishRect.bottom)) {
+
+                fish.remove();
+                clearInterval(interval);
+                score++;
+                scoreSpan.textContent = score;
+
+                if (score >= 15) {
+                    winScreen.style.display = "flex";
+                } else {
+                    spawnFish();
+                }
+            }
+        }, 60);
+    }
+
+    for (let i = 0; i < 3; i++) spawnFish();
+
+    function moveSeal(x, y) {
+        const areaRect = gameArea.getBoundingClientRect();
+        const sealRect = seal.getBoundingClientRect();
+        const offsetX = sealRect.width / 2;
+        const offsetY = sealRect.height / 2;
+
+        let nx = x - areaRect.left - offsetX;
+        let ny = y - areaRect.top - offsetY;
+
+        nx = Math.max(0, Math.min(areaRect.width - sealRect.width, nx));
+        ny = Math.max(0, Math.min(areaRect.height - sealRect.height, ny));
+
+        seal.style.left = nx + "px";
+        seal.style.top = ny + "px";
+    }
+
+    gameArea.addEventListener("mousemove", e => {
+        moveSeal(e.clientX, e.clientY);
+    });
+
+    gameArea.addEventListener("touchmove", e => {
+        const t = e.touches[0];
+        moveSeal(t.clientX, t.clientY);
+    }, { passive: true });
+
+    const startRect = gameArea.getBoundingClientRect();
+    seal.style.left = startRect.width / 2 - 55 + "px";
+    seal.style.top = startRect.height / 2 - 35 + "px";
+</script>
+
+</body>
+  </html>
