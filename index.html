@@ -101,6 +101,7 @@ body {
   background: linear-gradient(#6fd6ff, #004f7a);
   border-radius: 20px;
   overflow: hidden;
+  touch-action: none;
 }
 
 #seal {
@@ -120,40 +121,32 @@ body {
 /* КОЛЛАЖ */
 #collage {
   width: 100%;
-  height: 400px;
-  overflow: hidden;
-  position: relative;
+  max-width: 380px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
 }
 
-#collage-inner {
-  position: absolute;
-  width: 100%;
-  animation: scrollUp 14s linear infinite;
-}
-
-#collage-inner img {
-  width: 100%;
-  margin-bottom: 10px;
+#collage img {
+  width: 45%;
   border-radius: 12px;
 }
 
-@keyframes scrollUp {
-  0% { top: 100%; }
-  100% { top: -120%; }
-}
-
-/* БЛИКИ НА 4 СТРАНИЦЕ */
-#shine {
+/* ЗВЁЗДОЧКИ */
+.star {
   position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(circle, rgba(255,255,255,0.6), transparent 70%);
-  animation: shineMove 4s infinite alternate;
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle, white, rgba(255,255,255,0));
+  border-radius: 50%;
+  animation: twinkle 1.5s infinite ease-in-out;
 }
 
-@keyframes shineMove {
-  0% { transform: translate(-20%, -20%); }
-  100% { transform: translate(20%, 20%); }
+@keyframes twinkle {
+  0% { opacity: 0.2; transform: scale(0.6); }
+  50% { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 0.2; transform: scale(0.6); }
 }
 </style>
 </head>
@@ -177,7 +170,7 @@ body {
     <img id="seal" src="https://raw.githubusercontent.com/cimboli/kilechka-love/refs/heads/main/----------------------------1771023353029.png">
   </div>
 
-  <div class="text">Кильки: <span id="score">0</span>/15</div>
+  <div class="text" id="score-box">Кильки: <span id="score">0</span>/15</div>
 
   <button id="next-btn" class="btn" style="display:none" onclick="goToScreen(3)">Дальше</button>
 </section>
@@ -187,25 +180,22 @@ body {
   <h1 class="title">Ты моё сердечко</h1>
 
   <div id="collage">
-    <div id="collage-inner">
-      <img src="https://raw.githubusercontent.com/cimboli/kilechka-love/refs/heads/main/IMG_20251123_192001.jpg">
-      <img src="https://raw.githubusercontent.com/cimboli/kilechka-love/refs/heads/main/IMG_20251230_210758.jpg">
-      <img src="https://raw.githubusercontent.com/cimboli/kilechka-love/refs/heads/main/IMG_20251230_210909.jpg">
-      <img src="https://raw.githubusercontent.com/cimboli/kilechka-love/refs/heads/main/IMG_20251231_201012.jpg">
-      <img src="https://raw.githubusercontent.com/cimboli/kilechka-love/refs/heads/main/IMG_20251231_201018.jpg">
-    </div>
+    <img src="https://raw.githubusercontent.com/cimboli/kilechka-love/refs/heads/main/IMG_20251123_192001.jpg">
+    <img src="https://raw.githubusercontent.com/cimboli/kilechka-love/refs/heads/main/IMG_20251230_210758.jpg">
+    <img src="https://raw.githubusercontent.com/cimboli/kilechka-love/refs/heads/main/IMG_20251230_210909.jpg">
+    <img src="https://raw.githubusercontent.com/cimboli/kilechka-love/refs/heads/main/IMG_20251231_201012.jpg">
+    <img src="https://raw.githubusercontent.com/cimboli/kilechka-love/refs/heads/main/IMG_20251231_201018.jpg">
   </div>
 
   <button class="btn" onclick="goToScreen(4)">Дальше</button>
 </section>
 
-<!-- ЭКРАН 4 — ТВОЁ ФОТО + БЛИКИ -->
+<!-- ЭКРАН 4 — ФОТО + ЗВЁЗДЫ -->
 <section id="screen4" class="screen">
   <h1 class="title">Будь моим Валентином</h1>
 
   <div style="position:relative; width:90%; max-width:350px;">
     <img src="https://raw.githubusercontent.com/cimboli/kilechka-love/refs/heads/main/---------------------------------------------------1771025600731.png" width="100%" style="border-radius:16px;">
-    <div id="shine"></div>
   </div>
 </section>
 
@@ -311,6 +301,20 @@ gameArea.addEventListener("touchmove", e => {
 /* СТАРТ */
 for (let i = 0; i < 5; i++) createFish();
 animate();
+
+/* ЗВЁЗДЫ НА 4 СТРАНИЦЕ */
+function addStars() {
+  const screen4 = document.getElementById("screen4");
+  for (let i = 0; i < 25; i++) {
+    const s = document.createElement("div");
+    s.classList.add("star");
+    s.style.left = Math.random() * 100 + "%";
+    s.style.top = Math.random() * 100 + "%";
+    s.style.animationDelay = Math.random() * 2 + "s";
+    screen4.appendChild(s);
+  }
+}
+addStars();
 </script>
 
 </body>
