@@ -11,160 +11,358 @@
       margin: 0;
       font-family: "Comic Sans MS", system-ui, sans-serif;
       background: radial-gradient(circle at top, #ffe6f5, #ff8ac2);
-      min-height: 100vh;
-      display: flex;
+      overflow: hidden;
+    }
+
+    .screen {
+      display: none;
+      width: 100vw;
+      height: 100vh;
+      position: relative;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
+      padding: 20px;
     }
 
-    .wrap {
-      text-align: center;
+    .screen.active {
+      display: flex;
+    }
+
+    .title {
+      font-size: 28px;
       color: #ff1f8a;
-    }
-
-    h1 {
-      margin-bottom: 20px;
+      text-align: center;
       text-shadow: 0 3px 6px rgba(255, 0, 120, 0.4);
+      margin-bottom: 16px;
     }
 
-    .seal {
-      position: relative;
-      width: 160px;
-      height: 100px;
-      margin: 0 auto;
+    .text {
+      color: #ffffff;
+      text-align: center;
+      margin-bottom: 16px;
     }
 
-    .seal-body {
+    .btn {
+      padding: 12px 24px;
+      background: #ff4fa8;
+      border: none;
+      border-radius: 999px;
+      color: white;
+      font-size: 18px;
+      margin-top: 16px;
+      cursor: pointer;
+      box-shadow: 0 6px 14px rgba(255, 79, 168, 0.5);
+    }
+
+    .btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 3px 8px rgba(255, 79, 168, 0.4);
+    }
+
+    /* Сердечки на первом экране */
+    #hearts-container {
       position: absolute;
-      inset: 20px 0 0 0;
-      background: radial-gradient(circle at 20% 20%, #ffffff, #f0f0f0);
-      border-radius: 70px 80px 60px 60px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+      inset: 0;
+      overflow: hidden;
+      z-index: -1;
     }
 
-    .seal-head {
+    .heart {
       position: absolute;
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 20%, #ffffff, #f0f0f0);
-      top: -10px;
-      left: 45px;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+      width: 40px;
+      height: 40px;
+      background: #ff4fa8;
+      transform: rotate(-45deg);
+      opacity: 0.7;
+      animation: floatUp 10s linear infinite;
     }
 
-    .seal-eye {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      background: #000;
-      border-radius: 50%;
-      top: 22px;
-    }
-    .seal-eye.left { left: 16px; }
-    .seal-eye.right { right: 16px; }
-
-    .seal-eye::after {
+    .heart::before,
+    .heart::after {
       content: "";
       position: absolute;
-      width: 3px;
-      height: 3px;
-      background: #fff;
+      width: 40px;
+      height: 40px;
+      background: #ff4fa8;
       border-radius: 50%;
-      top: 1px;
-      left: 2px;
     }
 
-    .seal-nose {
+    .heart::before { top: -20px; left: 0; }
+    .heart::after { left: 20px; top: 0; }
+
+    @keyframes floatUp {
+      0%   { transform: translateY(100vh) rotate(-45deg); }
+      100% { transform: translateY(-20vh) rotate(-45deg); }
+    }
+
+    /* Игровое поле */
+    #game-area {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      height: 60vh;
+      max-height: 520px;
+      background: linear-gradient(#6fd6ff, #004f7a);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+    }
+
+    #seal {
       position: absolute;
+      width: 190px; /* средний размер */
+      height: auto;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .fish {
+      position: absolute;
+      width: 40px;
+      height: 20px;
+      background: #c0e6ff;
+      border-radius: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    .fish::before {
+      content: "";
+      position: absolute;
+      right: -12px;
+      top: 4px;
       width: 16px;
       height: 12px;
+      background: #c0e6ff;
       border-radius: 50%;
-      background: #000;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
+      transform: rotate(20deg);
     }
 
-    .seal-mouth {
-      position: absolute;
-      width: 30px;
-      height: 18px;
-      border-radius: 0 0 30px 30px;
-      border-bottom: 2px solid #000;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .seal-whisker {
-      position: absolute;
-      width: 20px;
-      height: 2px;
-      background: #000;
-      bottom: 18px;
-    }
-    .seal-whisker.left1  { left: 6px;  transform: rotate(10deg); }
-    .seal-whisker.left2  { left: 6px;  bottom: 13px; transform: rotate(-5deg); }
-    .seal-whisker.right1 { right: 6px; transform: rotate(-10deg); }
-    .seal-whisker.right2 { right: 6px; bottom: 13px; transform: rotate(5deg); }
-
-    .seal-tail {
-      position: absolute;
-      width: 34px;
-      height: 34px;
-      right: -10px;
-      bottom: 18px;
-      transform: rotate(-25deg);
-    }
-    .seal-tail::before,
-    .seal-tail::after {
+    .fish::after {
       content: "";
       position: absolute;
-      width: 24px;
-      height: 18px;
-      background: #ffffff;
+      left: 6px;
+      top: 6px;
+      width: 6px;
+      height: 6px;
+      background: #000;
       border-radius: 50%;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
     }
-    .seal-tail::before { left: 0; top: 0; }
-    .seal-tail::after  { right: 0; top: 4px; }
 
-    .seal-fin {
-      position: absolute;
-      width: 30px;
-      height: 20px;
-      background: #ffffff;
-      border-radius: 50%;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+    #score-box {
+      margin-top: 10px;
+      color: #ffffff;
+      font-size: 18px;
     }
-    .seal-fin.left  { left: 18px; bottom: 6px; transform: rotate(20deg); }
-    .seal-fin.right { left: 48px; bottom: 2px; transform: rotate(-10deg); }
+
+    #win-message {
+      margin-top: 10px;
+      color: #ffffff;
+      font-size: 20px;
+      display: none;
+      text-align: center;
+    }
+
+    /* Коллаж (экран 3) */
+    .hearts-grid {
+      position: relative;
+      width: 100%;
+      max-width: 360px;
+      height: 360px;
+    }
+
+    .big-heart {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      background: #ff4fa8;
+      transform: rotate(-45deg);
+    }
+
+    .big-heart::before,
+    .big-heart::after {
+      content: "";
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      background: #ff4fa8;
+      border-radius: 50%;
+    }
+
+    .big-heart::before { top: -60px; left: 0; }
+    .big-heart::after { left: 60px; top: 0; }
+
+    .big-heart.h1 { top: 20px; left: 20px; }
+    .big-heart.h2 { top: 80px; right: 10px; background:#ff7fc4; }
+    .big-heart.h3 { bottom: 10px; left: 60px; background:#ff99d1; }
+
+    .overlay-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #ffffff;
+      font-size: 22px;
+      text-shadow: 0 3px 6px rgba(0,0,0,0.4);
+      padding: 10px;
+    }
+
+    /* Финальный экран */
+    #screen4 .title {
+      font-size: 30px;
+    }
   </style>
 </head>
-
 <body>
-  <div class="wrap">
-    <h1>Я очень тебя люблю, Килечка</h1>
 
-    <div class="seal">
-      <div class="seal-body"></div>
+<!-- ЭКРАН 1: признание + сердечки -->
+<section id="screen1" class="screen active">
+  <div id="hearts-container"></div>
+  <h1 class="title">Я очень тебя люблю, Килечка</h1>
+  <p class="text">Нажми, если тоже любишь меня</p>
+  <button class="btn" onclick="goToScreen(2)">Я тоже тебя люблю</button>
+</section>
 
-      <div class="seal-head">
-        <div class="seal-eye left"></div>
-        <div class="seal-eye right"></div>
-        <div class="seal-nose"></div>
-        <div class="seal-mouth"></div>
-        <div class="seal-whisker left1"></div>
-        <div class="seal-whisker left2"></div>
-        <div class="seal-whisker right1"></div>
-        <div class="seal-whisker right2"></div>
-      </div>
+<!-- ЭКРАН 2: игра с тюленем и рыбками -->
+<section id="screen2" class="screen">
+  <h2 class="title">Я хочу тебя всегда</h2>
+  <p class="text">Помоги тюленю скушать как можно больше килек</p>
 
-      <div class="seal-tail"></div>
-      <div class="seal-fin left"></div>
-      <div class="seal-fin right"></div>
-    </div>
+  <div id="game-area">
+    <!-- тюлень (картинка) -->
+    <img id="seal" src="https://i.imgur.com/7qQ2p8P.png" alt="seal">
   </div>
+
+  <div id="score-box">Кильки: <span id="score">0</span>/15</div>
+  <div id="win-message">И + П = 🫧💕</div>
+  <button class="btn" id="next-from-game" style="display:none" onclick="goToScreen(3)">Дальше</button>
+</section>
+
+<!-- ЭКРАН 3: коллаж с сердцами -->
+<section id="screen3" class="screen">
+  <h1 class="title">Ты моё сердечко</h1>
+  <div class="hearts-grid">
+    <div class="big-heart h1"></div>
+    <div class="big-heart h2"></div>
+    <div class="big-heart h3"></div>
+    <div class="overlay-text">Ты — лучшее, что со мной случалось</div>
+  </div>
+  <button class="btn" onclick="goToScreen(4)">Дальше</button>
+</section>
+
+<!-- ЭКРАН 4: финальная открытка -->
+<section id="screen4" class="screen">
+  <h1 class="title">Будь моим Валентином</h1>
+  <p class="text">Я хочу быть с тобой всегда</p>
+</section>
+
+<script>
+  // Переключение экранов
+  function goToScreen(n) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen' + n).classList.add('active');
+  }
+
+  // Сердечки на первом экране
+  const heartsContainer = document.getElementById('hearts-container');
+  for (let i = 0; i < 20; i++) {
+    const h = document.createElement('div');
+    h.classList.add('heart');
+    h.style.left = Math.random() * 100 + 'vw';
+    h.style.animationDuration = 8 + Math.random() * 6 + 's';
+    h.style.animationDelay = -Math.random() * 10 + 's';
+    h.style.opacity = 0.4 + Math.random() * 0.4;
+    heartsContainer.appendChild(h);
+  }
+
+  // Игра
+  const gameArea = document.getElementById('game-area');
+  const seal = document.getElementById('seal');
+  const scoreSpan = document.getElementById('score');
+  const winMessage = document.getElementById('win-message');
+  const nextFromGame = document.getElementById('next-from-game');
+
+  let score = 0;
+  let fishes = [];
+  let sealX = 50;
+  let sealY = 50;
+
+  function setSealPosition(xPercent, yPercent) {
+    const rect = gameArea.getBoundingClientRect();
+    const sealWidth = seal.offsetWidth;
+    const sealHeight = seal.offsetHeight;
+
+    let x = rect.width * xPercent / 100;
+    let y = rect.height * yPercent / 100;
+
+    x = Math.max(sealWidth / 2, Math.min(rect.width - sealWidth / 2, x));
+    y = Math.max(sealHeight / 2, Math.min(rect.height - sealHeight / 2, y));
+
+    seal.style.left = x + 'px';
+    seal.style.top = y + 'px';
+  }
+
+  setSealPosition(50, 50);
+
+  function createFish() {
+    const rect = gameArea.getBoundingClientRect();
+    const fish = document.createElement('div');
+    fish.classList.add('fish');
+    const x = Math.random() * (rect.width - 50) + 10;
+    const y = Math.random() * (rect.height - 40) + 10;
+    fish.style.left = x + 'px';
+    fish.style.top = y + 'px';
+    gameArea.appendChild(fish);
+    fishes.push(fish);
+  }
+
+  for (let i = 0; i < 6; i++) createFish();
+
+  function checkCollisions() {
+    const sealRect = seal.getBoundingClientRect();
+    fishes = fishes.filter(fish => {
+      const r = fish.getBoundingClientRect();
+      const overlap = !(
+        sealRect.right < r.left ||
+        sealRect.left > r.right ||
+        sealRect.bottom < r.top ||
+        sealRect.top > r.bottom
+      );
+      if (overlap) {
+        fish.remove();
+        score++;
+        scoreSpan.textContent = score;
+        if (score >= 15) {
+          winMessage.style.display = 'block';
+          nextFromGame.style.display = 'inline-block';
+        } else {
+          createFish();
+        }
+        return false;
+      }
+      return true;
+    });
+  }
+
+  function handleMove(clientX, clientY) {
+    const rect = gameArea.getBoundingClientRect();
+    const xPercent = ((clientX - rect.left) / rect.width) * 100;
+    const yPercent = ((clientY - rect.top) / rect.height) * 100;
+    setSealPosition(xPercent, yPercent);
+    checkCollisions();
+  }
+
+  gameArea.addEventListener('mousemove', e => {
+    handleMove(e.clientX, e.clientY);
+  });
+
+  gameArea.addEventListener('touchmove', e => {
+    const t = e.touches[0];
+    handleMove(t.clientX, t.clientY);
+  }, { passive: true });
+</script>
+
 </body>
 </html>
