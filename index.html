@@ -4,14 +4,17 @@
   <meta charset="UTF-8">
   <title>Для Килечки</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: "Comic Sans MS", system-ui, sans-serif;
       background: radial-gradient(circle at top, #ffe6f5, #ff8ac2);
       overflow: hidden;
     }
+
     .screen {
       display: none;
       width: 100vw;
@@ -22,21 +25,25 @@
       flex-direction: column;
       padding: 20px;
     }
+
     .screen.active {
       display: flex;
     }
+
     .title {
-      font-size: 28px;
+      font-size: 30px;
       color: #ff1f8a;
       text-align: center;
       text-shadow: 0 3px 6px rgba(255, 0, 120, 0.4);
       margin-bottom: 16px;
     }
+
     .text {
       color: #ffffff;
       text-align: center;
       margin-bottom: 16px;
     }
+
     .btn {
       padding: 12px 24px;
       background: #ff4fa8;
@@ -48,10 +55,49 @@
       cursor: pointer;
       box-shadow: 0 6px 14px rgba(255, 79, 168, 0.5);
     }
+
     .btn:active {
       transform: translateY(2px);
       box-shadow: 0 3px 8px rgba(255, 79, 168, 0.4);
     }
+
+    /* Сердечки */
+    #hearts-container {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    .heart {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: #ff4fa8;
+      transform: rotate(-45deg);
+      opacity: 0.7;
+      animation: floatUp 10s linear infinite;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: "";
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: #ff4fa8;
+      border-radius: 50%;
+    }
+
+    .heart::before { top: -20px; left: 0; }
+    .heart::after { left: 20px; top: 0; }
+
+    @keyframes floatUp {
+      0%   { transform: translateY(100vh) rotate(-45deg); }
+      100% { transform: translateY(-20vh) rotate(-45deg); }
+    }
+
+    /* Игра */
     #game-area {
       position: relative;
       width: 100%;
@@ -63,24 +109,29 @@
       overflow: hidden;
       box-shadow: 0 8px 20px rgba(0,0,0,0.35);
     }
+
     #seal {
       position: absolute;
       width: 190px;
       height: auto;
-      transform: translate(-50%, -50%);
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
       pointer-events: none;
     }
+
     .fish {
       position: absolute;
-    }
-    .fish img {
       width: 40px;
+      height: auto;
     }
+
     #score-box {
       margin-top: 10px;
       color: #ffffff;
       font-size: 18px;
     }
+
     #win-message {
       margin-top: 10px;
       color: #ffffff;
@@ -90,82 +141,150 @@
     }
   </style>
 </head>
+
 <body>
+
+<!-- ЭКРАН 1 -->
 <section id="screen1" class="screen active">
+  <div id="hearts-container"></div>
   <h1 class="title">Я очень тебя люблю, Килечка</h1>
   <p class="text">Нажми, если тоже любишь меня</p>
   <button class="btn" onclick="goToScreen(2)">Я тоже тебя люблю</button>
 </section>
+
+<!-- ЭКРАН 2 — ИГРА -->
 <section id="screen2" class="screen">
   <h2 class="title">Я хочу тебя всегда</h2>
-  <p class="text">Помоги тюленю скушать как можно больше кильек</p>
+  <p class="text">Помоги тюленю скушать 15 кильек</p>
+
   <div id="game-area">
-    <img id="seal" src="https://raw.githubusercontent.com/cimboli/kilechka-love/refs/heads/main/----------------------------1771023353029.png" alt="seal">
+    <img id="seal" src="https://raw.githubusercontent.com/cimboli/kilechka-love/refs/heads/main/----------------------------1771023353029.png">
   </div>
+
   <div id="score-box">Кильки: <span id="score">0</span>/15</div>
-  <div id="win-message">И + П = 🫧💕<br><button class="btn" onclick="goToScreen(3)">Дальше</button></div>
+
+  <div id="win-message">
+    И + П = 🫧💕<br>
+    <button class="btn" onclick="goToScreen(3)">Дальше</button>
+  </div>
 </section>
+
+<!-- ЭКРАН 3 -->
 <section id="screen3" class="screen">
   <h1 class="title">Ты моё сердечко</h1>
   <button class="btn" onclick="goToScreen(4)">Дальше</button>
 </section>
+
+<!-- ЭКРАН 4 -->
 <section id="screen4" class="screen">
   <h1 class="title">Будь моим Валентином</h1>
   <p class="text">Я хочу быть с тобой всегда</p>
 </section>
+
 <script>
+/* Переключение экранов */
 function goToScreen(n) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen' + n).classList.add('active');
 }
+
+/* Сердечки */
+const heartsContainer = document.getElementById('hearts-container');
+for (let i = 0; i < 20; i++) {
+  const h = document.createElement('div');
+  h.classList.add('heart');
+  h.style.left = Math.random() * 100 + 'vw';
+  h.style.animationDuration = 8 + Math.random() * 6 + 's';
+  h.style.animationDelay = -Math.random() * 10 + 's';
+  heartsContainer.appendChild(h);
+}
+
+/* Игра */
 const gameArea = document.getElementById('game-area');
 const seal = document.getElementById('seal');
 const scoreSpan = document.getElementById('score');
 const winMessage = document.getElementById('win-message');
+
 let score = 0;
 let fishes = [];
+
+/* Создание рыбы */
 function createFish() {
-  const fish = document.createElement('div');
+  const fish = document.createElement('img');
+  fish.src = "https://raw.githubusercontent.com/cimboli/kilechka-love/refs/heads/main/---------------------------------------------1771023922407.png";
   fish.classList.add('fish');
-  fish.innerHTML = "<img src='https://raw.githubusercontent.com/cimboli/kilechka-love/refs/heads/main/---------------------------------------------1771023922407.png'>";
-  fish.style.left = Math.random() * (gameArea.clientWidth - 40) + "px";
-  fish.style.top = Math.random() * (gameArea.clientHeight - 40) + "px";
+
+  const y = Math.random() * (gameArea.clientHeight - 40);
+  fish.style.top = y + "px";
+  fish.style.left = gameArea.clientWidth + "px";
+
   gameArea.appendChild(fish);
-  fishes.push(fish);
+
+  const speed = 1 + Math.random() * 2;
+
+  fishes.push({ el: fish, speed });
 }
-for (let i = 0; i < 5; i++) createFish();
-function checkCollisions() {
-  const sealRect = seal.getBoundingClientRect();
-  fishes = fishes.filter(fish => {
-    const r = fish.getBoundingClientRect();
-    const overlap = !(sealRect.right < r.left || sealRect.left > r.right || sealRect.bottom < r.top || sealRect.top > r.bottom);
-    if (overlap) {
+
+/* Движение рыб */
+function moveFishes() {
+  fishes.forEach((fishObj, index) => {
+    const fish = fishObj.el;
+    fish.style.left = (fish.offsetLeft - fishObj.speed) + "px";
+
+    if (fish.offsetLeft < -50) {
       fish.remove();
-      score++;
-      scoreSpan.textContent = score;
-      if (score >= 15) {
-        winMessage.style.display = 'block';
-      } else {
-        createFish();
-      }
-      return false;
+      fishes.splice(index, 1);
+      createFish();
     }
-    return true;
+
+    checkCollision(fish, index);
   });
+
+  requestAnimationFrame(moveFishes);
 }
-function handleMove(clientX, clientY) {
+
+/* Проверка столкновения */
+function checkCollision(fish, index) {
+  const sealRect = seal.getBoundingClientRect();
+  const fishRect = fish.getBoundingClientRect();
+
+  const overlap = !(
+    sealRect.right < fishRect.left ||
+    sealRect.left > fishRect.right ||
+    sealRect.bottom < fishRect.top ||
+    sealRect.top > fishRect.bottom
+  );
+
+  if (overlap) {
+    fish.remove();
+    fishes.splice(index, 1);
+    score++;
+    scoreSpan.textContent = score;
+
+    if (score >= 15) {
+      winMessage.style.display = "block";
+    } else {
+      createFish();
+    }
+  }
+}
+
+/* Управление тюленем */
+gameArea.addEventListener('mousemove', e => {
   const rect = gameArea.getBoundingClientRect();
-  const x = clientX - rect.left;
-  const y = clientY - rect.top;
-  seal.style.left = x + 'px';
-  seal.style.top = y + 'px';
-  checkCollisions();
-}
-gameArea.addEventListener('mousemove', e => handleMove(e.clientX, e.clientY));
+  seal.style.top = (e.clientY - rect.top) + "px";
+});
+
 gameArea.addEventListener('touchmove', e => {
   const t = e.touches[0];
-  handleMove(t.clientX, t.clientY);
+  const rect = gameArea.getBoundingClientRect();
+  seal.style.top = (t.clientY - rect.top) + "px";
 }, { passive: true });
+
+/* Старт игры */
+for (let i = 0; i < 5; i++) createFish();
+moveFishes();
 </script>
+
 </body>
 </html>
