@@ -5,13 +5,15 @@
 <title>Для Килечки</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<!-- ШРИФТ Nunito -->
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+
 <style>
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  font-family: "Comic Sans MS", sans-serif;
-  background: radial-gradient(circle at top, #ffe6f5, #ff8ac2);
+  font-family: "Nunito", sans-serif;
   overflow-x: hidden;
 }
 
@@ -32,14 +34,14 @@ body {
 
 /* ТЕКСТ */
 .title {
-  font-size: 30px;
-  color: #ff1f8a;
+  font-size: 32px;
+  font-weight: 700;
   text-align: center;
   margin-bottom: 10px;
 }
 
 .text {
-  color: white;
+  font-size: 18px;
   text-align: center;
   margin-bottom: 20px;
 }
@@ -47,13 +49,24 @@ body {
 /* КНОПКИ */
 .btn {
   padding: 12px 24px;
-  background: #ff4fa8;
   border: none;
   border-radius: 999px;
-  color: white;
   font-size: 18px;
   cursor: pointer;
   margin-top: 20px;
+  font-weight: 600;
+}
+
+/* ЭКРАН 1 — розовый */
+#screen1 {
+  background: radial-gradient(circle at top, #ffe6f5, #ff8ac2);
+}
+
+#screen1 .title { color: #ff1f8a; }
+#screen1 .text { color: white; }
+#screen1 .btn {
+  background: #ff4fa8;
+  color: white;
 }
 
 /* СЕРДЕЧКИ */
@@ -92,6 +105,18 @@ body {
   100% { transform: translateY(-20vh) rotate(-45deg); }
 }
 
+/* ЭКРАН 2 — голубой */
+#screen2 {
+  background: linear-gradient(#bde8ff, #6bbcff);
+}
+
+#screen2 .title { color: #004a88; }
+#screen2 .text { color: white; }
+#screen2 .btn {
+  background: #004a88;
+  color: white;
+}
+
 /* ИГРА */
 #game-area {
   position: relative;
@@ -118,6 +143,17 @@ body {
   width: 40px;
 }
 
+/* ЭКРАН 3 — серый */
+#screen3 {
+  background: linear-gradient(#f0f0f0, #cfcfcf);
+}
+
+#screen3 .title { color: #555; }
+#screen3 .btn {
+  background: #777;
+  color: white;
+}
+
 /* КОЛЛАЖ */
 #collage {
   width: 100%;
@@ -132,6 +168,13 @@ body {
   width: 45%;
   border-radius: 12px;
 }
+
+/* ЭКРАН 4 — фиолетовый */
+#screen4 {
+  background: linear-gradient(#d7b3ff, #8a4fff);
+}
+
+#screen4 .title { color: white; }
 
 /* ЗВЁЗДЫ */
 .star {
@@ -216,7 +259,7 @@ for (let i = 0; i < 20; i++) {
   hearts.appendChild(h);
 }
 
-/* ВСЯ ИГРА ЗАПУСКАЕТСЯ ТОЛЬКО ПОСЛЕ ПОЛНОЙ ЗАГРУЗКИ */
+/* ВСЯ ИГРА ЗАПУСКАЕТСЯ ПОСЛЕ ПОЛНОЙ ЗАГРУЗКИ */
 window.onload = function() {
 
 const gameArea = document.getElementById("game-area");
