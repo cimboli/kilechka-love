@@ -60,6 +60,8 @@ body {
 /* ЭКРАН 1 — розовый */
 #screen1 {
   background: radial-gradient(circle at top, #ffe6f5, #ff8ac2);
+  position: relative;
+  overflow: hidden;
 }
 
 #screen1 .title { color: #ff1f8a; }
@@ -108,6 +110,7 @@ body {
 /* ЭКРАН 2 — голубой */
 #screen2 {
   background: linear-gradient(#bde8ff, #6bbcff);
+  overflow: hidden;
 }
 
 #screen2 .title { color: #004a88; }
@@ -166,7 +169,17 @@ body {
 
 #collage img {
   width: 45%;
+  height: 160px;
+  object-fit: cover;
   border-radius: 12px;
+}
+
+#collage img:nth-child(odd) {
+  transform: rotate(-3deg);
+}
+
+#collage img:nth-child(even) {
+  transform: rotate(3deg);
 }
 
 /* ЭКРАН 4 — фиолетовый */
@@ -246,7 +259,10 @@ body {
 /* ПЕРЕКЛЮЧЕНИЕ ЭКРАНОВ */
 function goToScreen(n) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen' + n).classList.add('active');
+  const scr = document.getElementById('screen' + n);
+  scr.classList.add('active');
+
+  if (n === 2) startGame();
 }
 
 /* СЕРДЕЧКИ */
@@ -259,95 +275,93 @@ for (let i = 0; i < 20; i++) {
   hearts.appendChild(h);
 }
 
-/* ВСЯ ИГРА ЗАПУСКАЕТСЯ ПОСЛЕ ПОЛНОЙ ЗАГРУЗКИ */
-window.onload = function() {
+/* ИГРА */
+let gameStarted = false;
 
-const gameArea = document.getElementById("game-area");
-const seal = document.getElementById("seal");
-const scoreSpan = document.getElementById("score");
-const nextBtn = document.getElementById("next-btn");
+function startGame() {
+  if (gameStarted) return;
+  gameStarted = true;
 
-let score = 0;
-let fishes = [];
+  const gameArea = document.getElementById("game-area");
+  const seal = document.getElementById("seal");
+  const scoreSpan = document.getElementById("score");
+  const nextBtn = document.getElementById("next-btn");
 
-/* СОЗДАНИЕ РЫБ */
-function createFish() {
-  const fish = document.createElement("img");
-  fish.src = "https://raw.githubusercontent.com/cimboli/kilechka-love/refs/heads/main/---------------------------------------------1771023922407.png";
-  fish.classList.add("fish");
+  let score = 0;
+  let fishes = [];
 
-  fish.style.top = Math.random() * (gameArea.clientHeight - 40) + "px";
-  fish.style.left = gameArea.clientWidth + "px";
+  function createFish() {
+    const fish = document.createElement("img");
+    fish.src = "https://raw.githubusercontent.com/cimboli/kilechka-love/refs/heads/main/---------------------------------------------1771023922407.png";
+    fish.classList.add("fish");
 
-  gameArea.appendChild(fish);
+    fish.style.top = Math.random() * (gameArea.clientHeight - 40) + "px";
+    fish.style.left = gameArea.clientWidth + "px";
 
-  fishes.push({
-    el: fish,
-    speed: 1 + Math.random() * 2
-  });
-}
+    gameArea.appendChild(fish);
 
-/* ДВИЖЕНИЕ РЫБ */
-function animate() {
-  fishes.forEach((f, i) => {
-    f.el.style.left = (f.el.offsetLeft - f.speed) + "px";
+    fishes.push({
+      el: fish,
+      speed: 1 + Math.random() * 2
+    });
+  }
 
-    if (f.el.offsetLeft < -50) {
+  function animate() {
+    fishes.forEach((f, i) => {
+      f.el.style.left = (f.el.offsetLeft - f.speed) + "px";
+
+      if (f.el.offsetLeft < -50) {
+        f.el.remove();
+        fishes.splice(i, 1);
+        createFish();
+      }
+
+      checkCollision(f, i);
+    });
+
+    requestAnimationFrame(animate);
+  }
+
+  function checkCollision(f, index) {
+    const sealRect = seal.getBoundingClientRect();
+    const fishRect = f.el.getBoundingClientRect();
+
+    const overlap = !(
+      sealRect.right < fishRect.left ||
+      sealRect.left > fishRect.right ||
+      sealRect.bottom < fishRect.top ||
+      sealRect.top > fishRect.bottom
+    );
+
+    if (overlap) {
       f.el.remove();
-      fishes.splice(i, 1);
-      createFish();
-    }
+      fishes.splice(index, 1);
 
-    checkCollision(f, i);
-  });
+      score++;
+      scoreSpan.textContent = score;
 
-  requestAnimationFrame(animate);
-}
-
-/* СТОЛКНОВЕНИЕ */
-function checkCollision(f, index) {
-  const sealRect = seal.getBoundingClientRect();
-  const fishRect = f.el.getBoundingClientRect();
-
-  const overlap = !(
-    sealRect.right < fishRect.left ||
-    sealRect.left > fishRect.right ||
-    sealRect.bottom < fishRect.top ||
-    sealRect.top > fishRect.bottom
-  );
-
-  if (overlap) {
-    f.el.remove();
-    fishes.splice(index, 1);
-
-    score++;
-    scoreSpan.textContent = score;
-
-    if (score >= 15) {
-      nextBtn.style.display = "block";
-    } else {
-      createFish();
+      if (score >= 15) {
+        nextBtn.style.display = "block";
+      } else {
+        createFish();
+      }
     }
   }
+
+  gameArea.addEventListener("mousemove", e => {
+    const rect = gameArea.getBoundingClientRect();
+    seal.style.top = (e.clientY - rect.top) + "px";
+  });
+
+  gameArea.addEventListener("touchmove", e => {
+    const t = e.touches[0];
+    const rect = gameArea.getBoundingClientRect();
+    seal.style.top = (t.clientY - rect.top) + "px";
+  }, { passive: true });
+
+  for (let i = 0; i < 5; i++) createFish();
+  animate();
 }
-
-/* ДВИЖЕНИЕ ТЮЛЕНЯ */
-gameArea.addEventListener("mousemove", e => {
-  const rect = gameArea.getBoundingClientRect();
-  seal.style.top = (e.clientY - rect.top) + "px";
-});
-
-gameArea.addEventListener("touchmove", e => {
-  const t = e.touches[0];
-  const rect = gameArea.getBoundingClientRect();
-  seal.style.top = (t.clientY - rect.top) + "px";
-}, { passive: true });
-
-/* СТАРТ */
-for (let i = 0; i < 5; i++) createFish();
-animate();
-
-}; // конец window.onload
 
 /* ЗВЁЗДЫ НА 4 СТРАНИЦЕ */
 function addStars() {
