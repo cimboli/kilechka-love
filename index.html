@@ -55,6 +55,8 @@ body {
   cursor: pointer;
   margin-top: 20px;
   font-weight: 600;
+  position: relative;
+  z-index: 10; /* чтобы кнопка была поверх сердечек */
 }
 
 /* ЭКРАН 1 — розовый */
@@ -75,8 +77,9 @@ body {
 #hearts-container {
   position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: 0; /* ниже текста и кнопки */
   overflow: hidden;
+  pointer-events: none; /* чтобы не блокировали клики */
 }
 
 .heart {
