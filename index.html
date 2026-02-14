@@ -133,7 +133,7 @@ body {
   border-radius: 12px;
 }
 
-/* ЗВЁЗДОЧКИ */
+/* ЗВЁЗДЫ */
 .star {
   position: absolute;
   width: 12px;
@@ -216,7 +216,9 @@ for (let i = 0; i < 20; i++) {
   hearts.appendChild(h);
 }
 
-/* ИГРА */
+/* ВСЯ ИГРА ЗАПУСКАЕТСЯ ТОЛЬКО ПОСЛЕ ПОЛНОЙ ЗАГРУЗКИ */
+window.onload = function() {
+
 const gameArea = document.getElementById("game-area");
 const seal = document.getElementById("seal");
 const scoreSpan = document.getElementById("score");
@@ -301,6 +303,8 @@ gameArea.addEventListener("touchmove", e => {
 /* СТАРТ */
 for (let i = 0; i < 5; i++) createFish();
 animate();
+
+}; // конец window.onload
 
 /* ЗВЁЗДЫ НА 4 СТРАНИЦЕ */
 function addStars() {
